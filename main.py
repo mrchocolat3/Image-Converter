@@ -170,12 +170,13 @@ class App:
 
     def _clear_cache(self):
         imgPath = Path(self.images[0])
-        exportPath = os.path.join(imgPath.parent, 'Converted Images')
-        if os.path.exists(exportPath):
-            shutil.rmtree(exportPath)
-            os.mkdir(exportPath)
+        self.exportPath = os.path.join(str(imgPath.parent), 'Converted Images')
+        if os.path.exists(self.exportPath):
+            shutil.rmtree(self.exportPath)
+            os.mkdir(self.exportPath)
+            print(self.exportPath)
         else:
-            os.mkdir(exportPath)
+            os.mkdir(self.exportPath)
 
     def convert(
         self,
@@ -192,8 +193,10 @@ class App:
                     img = Image.open(image).convert('RGB')
                     if res:
                         img.resize(res)
+                    img_dir = str(Path(image).parent)
+                    new_img = image.replace(img_dir, self.exportPath)
                     img.save(
-                        image.replace(extns, ext), ext)
+                        new_img.replace(extns, ext), ext)
                     converted += 1
 
                     self.infoL['text'] = f"Converted {converted} / {len(self.images)} images"
